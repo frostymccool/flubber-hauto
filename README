@@ -1,1 +1,3 @@
-Welcome to the my first git file :)
+Projects:
+solar = joggler based python solar heating collector logger. The solar collector uses a Resol RS485->RS232->USB interface and maes use of the decodeing work by vbusdecode google code project
+xap = collection of helpful xap tools, mostly from www.homeautomation.com - The livebox/hah for derek/brett currently servers as the main hub for the house.
