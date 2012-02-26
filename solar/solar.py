@@ -68,12 +68,12 @@ def solar(xap):
 
        print "Sending xAP.."
 
-       msg = "input.state\n{\ncolTemp=%.2f\ntankbotTemp=%.2f\ntanktopTemp=%.2f\npump=%d\n}" % (col, bottom, top, pump)
+       msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%d\n}" % (col, bottom, top, pump)
 
        # use an exception handler; if the network is down this command will fail
        try:
           #xap.sendHeatBeat(180)
-          xap.sendEventMsg( msg )
+          xap.sendSolarEventMsg( msg )
        except:
           print "Failed to send xAP, network may be down"
       

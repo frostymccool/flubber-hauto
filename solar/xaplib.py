@@ -68,7 +68,7 @@ v=12
 hop=1
 uid=%s
 class=%s
-source=%s
+#source=%s
 target=%s
 }
 %s""" % (self.uid, clazz, self.source, target, msg)
@@ -87,6 +87,9 @@ target=%s
 
 	def sendEventMsg(self, msg):
 		self.sendMsg("xAPBSC.event", "", msg)
+
+	def sendSolarEventMsg(self, msg):
+		self.sendMsg("solar.event", "", msg)
 
 	def receive(self):
 		try:
