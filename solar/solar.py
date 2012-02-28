@@ -55,7 +55,10 @@ def solar(xap):
        col=float(col)
        bottom=float(bottom)
        top=float(top)
-       pump=int(pump)
+       if pump==100 :
+         pump="On"
+       else :
+         pump="Off"
 
        # adjust collector for -ve
        if col>600:
@@ -68,7 +71,7 @@ def solar(xap):
 
        print "Sending xAP.."
 
-       msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%d\n}" % (col, bottom, top, pump)
+       msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%s\n}" % (col, bottom, top, pump)
 
        # use an exception handler; if the network is down this command will fail
        try:
