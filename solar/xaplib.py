@@ -68,8 +68,7 @@ v=12
 hop=1
 uid=%s
 class=%s
-#source=%s
-target=%s
+source=%s
 }
 %s""" % (self.uid, clazz, self.source, target, msg)
 		self.send(msg)
