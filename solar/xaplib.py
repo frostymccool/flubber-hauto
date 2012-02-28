@@ -70,7 +70,7 @@ uid=%s
 class=%s
 source=%s
 }
-%s""" % (self.uid, clazz, self.source, target, msg)
+%s""" % (self.uid, clazz, self.source, msg)
 		self.send(msg)
 
 	def sendLCDMsg(self, msg):
