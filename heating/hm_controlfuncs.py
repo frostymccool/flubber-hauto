@@ -24,7 +24,7 @@ from stats_defn import *
 from hm_constants import *
 from hm_utils import *
 
-# hm_lock(state, node=99)
+# hm_lock(state, node=0)
 # inputs:   state: 'lock'/'unlock'
 #           node: <num> or 0 for all nodes
 # return true for good status return
@@ -43,3 +43,62 @@ def hm_lock(state, node=0,serport) :
         err = hmKeyLock(node, state, serport)
 
     return err
+
+# hm_settemp(temp, node=0)
+# inputs:   temp: temperature value to set
+#           node: <num> element in StatList array or 0 for all nodes
+# return true for good status return
+def hm_settemp(temp, node=0, serport) :
+    err=0
+    
+    if (node==0) :
+        # loop round all nodes availble in StatList[]
+        for x in range(1, len(StatList)/SL_WIDTH) :
+            err += hm_SetNodeTemp(temp, node, serport)
+    else :
+        err = hm_SetNodeTemp(temp, node, serport)
+    
+    return err
+
+# hm_SetNodeTemp(temp, node, serport)
+# set individual node temperature
+SET_TEMP_CMD=18
+def hm_SetNodeTemp(temp, node, serport)
+    err=0
+
+    payload = [temp]
+
+    msg = hmFormMsgCRC(destination, StatList[node][SL_CONTR_TYPE], MY_MASTER_ADDR, FUNC_WRITE, SET_TEMP_CMD, payload)
+
+    print msg
+    string = ''.join(map(chr,msg))
+
+    err = hm_sendwritecmd(string, serport)
+
+    if (err=1) :
+        print "Failure to SetNodeTemp to %d on node %d" % (temp,node)
+
+    return err
+
+# generic function for sending a write command and validating the response
+def hm_sendwritecmd(message, serport)
+    err=0
+
+    print serport
+
+    try:
+        written = serport.write(string)  # Write a string
+    except serial.SerialTimeoutException, e:
+        s= "%s : Write timeout error: %s\n" % (localtime, e)
+        sys.stderr.write(s)
+    # Now wait for reply
+    byteread = serport.read(100)	# NB max return is 75 in 5/2 mode or 159 in 7day mode
+    datal = []
+    datal = datal + (map(ord,byteread))
+
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, destination, FUNC_WRITE, 2, datal) == False):
+        err = 1;
+        print "OH DEAR BAD RESPONSE"
+
+    return err
+
