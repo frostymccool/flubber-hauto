@@ -1,3 +1,3 @@
-hah - derek & brett from www.homeautomations.com - xap home automation hub extreme
-vbusdecode - https://code.google.com/p/vbusdecode/
-
+hah - derek & brett from www.homeautomationhub.com - xap home automation hub extreme
+vbusdecode - https://code.google.com/p/vbusdecode/ - for the packet decoder for the Resol Solar collector
+heatmiser-monitor-control - https://code.google.com/p/heatmiser-monitor-control - for the basic structure, utilities and payload read/write handler to get me started with the tstat control.

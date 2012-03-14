@@ -1,3 +1,4 @@
 Projects:
 solar = joggler based python solar heating collector logger. The solar collector uses a Resol RS485->RS232->USB interface and maes use of the decodeing work by vbusdecode google code project
 xap = collection of helpful xap tools, mostly from www.homeautomation.com - The livebox/hah for derek/brett currently servers as the main hub for the house.
+heating = heating tools for complete control of the heatmiser tstats in the house, will have xap broadcast and filtering embedded. Will controll all aspects of heating, including boiler on off and sense/control of boiler in relation to wood stove and solar collector. Needds to also respond to shower requests such that an xap shower message can determine if the water temp is sufficient and switch boiler on if neccesary.
