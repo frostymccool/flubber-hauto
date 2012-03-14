@@ -34,6 +34,6 @@ StatList = [
 # Named indexing into StatList
 SL_ADDR = 0
 SL_SHRT_NAME = 1
-SL_LONH_NAME = 2
+SL_LONG_NAME = 2
 SL_CONTR_TYPE = 3
 SL_GRAPH_COL = 4
