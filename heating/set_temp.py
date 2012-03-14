@@ -13,11 +13,12 @@ import os
 from stats_defn import *
 from hm_constants import *
 from hm_utils import *
+from hm_controlfuncs import *
 
 
 problem = 0
 
-sys.stderr = open('errorlog.txt', 'a') # Redirect stderr
+#sys.stderr = open('errorlog.txt', 'a') # Redirect stderr
 
 serport = serial.Serial()
 serport.port     = S_PORT_NAME
@@ -44,14 +45,16 @@ print "%s baud, %s bit, %s parity, with %s stopbits, timeout %s seconds" % (serp
 
 badresponse = range(12+1) #TODO hardcoded 12 here! YUK
 
+temp = 23
+
 # CYCLE THROUGH ALL CONTROLLERS
 for controller in StatList:
 	loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
 	print
-	print "Testing control %2d in %s *****************************" % (loop, controller[2])
+	print "Setting Temperature to %d for address %2d in location %s *****************************" % (temp, loop, controller[2])
 	badresponse[loop] = 0
-	destination = controller[0]
-	hmSetTemp(temp, destination, serport)
+	tstat = controller # pass through the the tstat array in the statlist
+	hm_SetNodeTemp(temp, tstat, serport)
 
 	time.sleep(2) # sleep for 2 seconds before next controller
 
