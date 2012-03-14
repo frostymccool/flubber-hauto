@@ -6,6 +6,9 @@
 # reference code for vbusdecode from http://code.google.com/p/vbusdecode/
 # reference code for hah/xap from http://code.google.com/p/livebox-hah/
 
+import sys
+sys.path.append('../xap')
+
 from xaplib import Xap
 from time import localtime, strftime, sleep
 import serial
@@ -86,5 +89,5 @@ def solar(xap):
     # wait another 45 seconds before attempting another read
     sleep(45)
 
-Xap("FF000F00","shawpad.ujog.solar").run(solar)
+Xap("F4060F00","shawpad.ujog.solar").run(solar)
 
