@@ -34,6 +34,7 @@ serport.timeout  = 3
 
 # TODO: remove hardcoded size
 temperatures=range(15)
+badresponse=range(15)
 
 def polltstats(xap):
 
@@ -43,13 +44,17 @@ def polltstats(xap):
        # iterate through controllers in StatList
        for controller in StatList:
            loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
-	   print
+	   #print
 	   badresponse[loop] = 0
 	   tstat = controller # pass through the the tstat array in the statlist
-	   temperatures[loop] = hm_ReadNodeTemp(temp, tstat, serport)
-	   print "Read Temperature for address %2d in location %s as %2.2f *****************************" % (temp, loop, controller[2], temperatures[loop])
+	   temperatures[loop] = hm_GetNodeTemp(tstat, serport)
+	   print "Read Temperature for address %2d in location %s as %2.2f *****************************" % (loop, controller[2], temperatures[loop])
 
 	   time.sleep(2) # sleep for 2 seconds before next controller
+
+       serport.close()
+
+       # TODO: keep a copy of the temperatures, compare them to previous set and only send the XAP if any one is different
 
        print "Sending xAP.."
 
@@ -60,13 +65,12 @@ def polltstats(xap):
            msg += "%s=%2.2f\n" % (controller[SL_SHRT_NAME], temperatures[controller[SL_ADDR]])
 
        msg += "}"
-
-       serport.close()
+       #print msg
 
        # use an exception handler; if the network is down this command will fail
        try:
           #xap.sendHeatBeat(180)
-          xap.sendSolarEventMsg( msg )
+          xap.sendHeatingEventMsg( msg )
        except:
           print "Failed to send xAP, network may be down"
       

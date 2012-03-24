@@ -75,6 +75,30 @@ def hm_SetNodeTemp(temperature, node, serport) :
 
     return err
 
+# hm_GetNodeTemp(node, serport)
+# gets and returns individual node temperature
+# node is the array element from the StatList structure
+GET_TEMP_CMD=38
+def hm_GetNodeTemp(node, serport) :
+    """hm_GetNodeTemp(node, serport) : get node temp and return it"""
+    err=0
+
+    #payload = []
+
+    # msg = hmFormMsgCRC(node[0], node[SL_CONTR_TYPE], MY_MASTER_ADDR, FUNC_WRITE, SET_TEMP_CMD, payload)
+
+    #print msg
+    #string = ''.join(map(chr,msg))
+
+    # result = hm_sendreadcmd(node[0], string, serport)
+
+    #temp = result[0]
+
+    if (err==1) :
+        print "Failure to GetNodeTemp to %d on tstat address %d" % (temperature,node[0])
+
+    return 22.2
+
 # generic function for sending a write command and validating the response
 # nodeAddress is the tstat communication address
 # message is the complete payload including crc
@@ -100,3 +124,27 @@ def hm_sendwritecmd(nodeAddress,  message, serport, protocol=HMV3_ID) :
 
     return err
 
+# generic function for sending a read command, validating and returning the buffer
+def hm_sendreadcmd(nodeAddress,  message, serport, protocol=HMV3_ID) :
+    """generic function for sending a write command and validating the response"""
+    err=0
+
+# use heating.py as the base to construct the read command
+
+    try:
+        written = serport.write(message)  # Write the complete message packet
+    except serial.SerialTimeoutException, e:
+        s= "%s : Write timeout error: %s\n" % (localtime, e)
+        sys.stderr.write(s)
+    # Now wait for reply
+    byteread = serport.read(100)	# NB max return is 75 in 5/2 mode or 159 in 7day mode
+    datal = []
+    datal = datal + (map(ord,byteread))
+
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, nodeAddress, FUNC_WRITE, 2, datal) == False):
+        err = 1;
+        print "OH DEAR BAD RESPONSE"
+
+
+
+    return result
