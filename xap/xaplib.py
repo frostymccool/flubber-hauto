@@ -90,6 +90,9 @@ source=%s
 	def sendSolarEventMsg(self, msg):
 		self.sendMsg("solar.event", "", msg)
 
+	def sendHeatingEventMsg(self, msg):
+		self.sendMsg("heating.event", "", msg)
+
 	def receive(self):
 		try:
 			return self.gin.recvfrom(8192)
