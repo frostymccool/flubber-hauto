@@ -48,7 +48,7 @@ def polltstats(xap):
 	   badresponse[loop] = 0
 	   tstat = controller # pass through the the tstat array in the statlist
 	   temperatures[loop] = hm_GetNodeTemp(tstat, serport)
-	   print "Read Temperature for address %2d in location %s as %2.2f *****************************" % (loop, controller[2], temperatures[loop])
+	   print "Read Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[2], temperatures[loop])
 
 	   time.sleep(2) # sleep for 2 seconds before next controller
 
@@ -62,10 +62,10 @@ def polltstats(xap):
        # TODO: review, do I send one packet per tstat or combined packet with all readings?
        msg = "data\n{\n" 
        for controller in StatList :
-           msg += "%s=%2.2f\n" % (controller[SL_SHRT_NAME], temperatures[controller[SL_ADDR]])
+           msg += "%s=%2.1f\n" % (controller[SL_SHRT_NAME], temperatures[controller[SL_ADDR]])
 
        msg += "}"
-       #print msg
+       print msg
 
        # use an exception handler; if the network is down this command will fail
        try:

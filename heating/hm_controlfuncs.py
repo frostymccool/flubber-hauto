@@ -86,21 +86,22 @@ def hm_GetNodeTemp(node, serport) :
     err=0
 
     payload = []
-    temperature=0
+    temperature=0.0
 
     try:
-        payload = hm_sendreadcmd(node[0], serport)
-    except e:
-        print "Failure to GetNodeTemp() on tstat address %d" % (node)
+        payload = hm_sendreadcmd(node[SL_ADDR], serport)
+    except:
+        print "Failure to GetNodeTemp() on tstat address %d" % (node[SL_ADDR])
         err=1
 
     if (err==0) :
         # parse the payload to extract the current temp
-        intairtemphigh = datal[32+ DATAOFFSET]
-        intairtemplow  = datal[33+ DATAOFFSET]
+        intairtemphigh = payload[32+ DATAOFFSET]
+        intairtemplow  = payload[33+ DATAOFFSET]
         temperature = (intairtemphigh*256 + intairtemplow)/10.0
+        print "Temperature: %.1f" % temperature
     else:
-        raise "hm_GetNodeTemp failed"
+        assert 0, "hm_GetNodeTemp failed for node: %d" % node[SL_ADDR]
 
 
     return temperature
@@ -164,7 +165,7 @@ def hm_sendreadcmd(nodeAddress, serport, protocol=HMV3_ID) :
         print  "Correct length reply received"
     else:
         print "Incorrect length reply %s" % (len(byteread))
-        s= "%s : Controller %2d : Incorrect length reply : %s\n" % (localtime, nodeAddress, le(byteread))
+        s= "%s : Controller %2d : Incorrect length reply : %s\n" % (localtime, nodeAddress, len(byteread))
         sys.stderr.write(s) 
         err += 1		
 
@@ -172,16 +173,20 @@ def hm_sendreadcmd(nodeAddress, serport, protocol=HMV3_ID) :
     #Now try converting it back to array
     datal = []
     datal = datal + (map(ord,byteread))
-        
-    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, controller[SL_CONTR_TYPE], destination, FUNC_READ, 75, datal) == False):
+     
+    #print "Going to verify CRC"
+    #print datal
+   
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, nodeAddress, FUNC_READ, 75, datal) == False):
         err += 1
         
-    if (err== 0):
-		# Should really only be length 75 or TBD at this point as we shouldnt do this if bad resp
-		# @todo define magic number 75 in terms of header and possible payload sizes
-		# @todo value in next line of 120 is a wrong guess
-		if ((len(byteread)) == 75) or ((len(byteread)) == 120):
-            return datal
+    #print "Verification done: %d" % (err)
 
-    raise "Invalid Block Read form sendreadcmd()"
-    
+    if ((err > 0) or ((len(byteread)<>75) and (len(byteread)<>120)) ):
+        assert 0, "Invalid Block Read from sendreadcmd() for node %d" % nodeAddress
+		
+    # Should really only be length 75 or TBD at this point as we shouldnt do this if bad resp
+    # @todo define magic number 75 in terms of header and possible payload sizes
+    # @todo value in next line of 120 is a wrong guess
+    return datal
+
