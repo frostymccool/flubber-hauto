@@ -8,11 +8,11 @@
 # reference code for hah/xap from http://code.google.com/p/livebox-hah/
 
 import sys
+import serial
 sys.path.append('../xap')
 
 from xaplib import Xap
 from time import localtime, strftime, sleep
-import serial
 import binascii
 import subprocess 
 import re
