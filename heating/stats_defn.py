@@ -15,13 +15,12 @@ S_PORT_NAME = '/dev/ttyUSB0'
 # Items in each row are :
 # Controller Address, ShortName, LongName, Controller Type, Graph Colour
 StatList = [
-[1,  "KSolid", "Kitchen Top",    HMV3_ID, "A020F0"],
-[2,  "KSlung", "Kitchen Bottom", HMV3_ID, "D02090"],
-[3,  "Bed_1", "Our Bedroom", HMV3_ID, "FFD700"],
+[1,  "KitchT", "Kitchen Top",    HMV3_ID, "A020F0"],
+[2,  "KitchB", "Kitchen Bottom", HMV3_ID, "D02090"],
+[3,  "Bed1", "Our Bedroom", HMV3_ID, "FFD700"],
 [4,  "Ens1", "Our Ensuite",    HMV3_ID, "6B8E23"],
-#[3,  "Dinig", "Dining",   HMV3_ID, "FF4500"],
-#[4,  "Livig", "Living",   HMV3_ID, "FF8C00"],
-#[5,  "Kitch", "Kitchen",  HMV3_ID, "FA8072"],
+#[3,  "Dine", "Dining",   HMV3_ID, "FF4500"],
+#[4,  "Liv", "Living",   HMV3_ID, "FF8C00"],
 #[10, "Study", "Study",  HMV3_ID, "00FA9A"],
 #[6,  "Bthrm", "Bathroom", HMV3_ID, "D2691E"],
 #[9,  "Play", "Playroom",   HMV3_ID, "32CD32"],
