@@ -81,5 +81,5 @@ def polltstats(xap):
     # wait another 45 seconds before attempting another read
     sleep(45)
 
-Xap("FF000F00","shawpad.ujog.tstats").run(polltstats)
+Xap("FF000F01","shawpad.ujog.tstats").run(polltstats)
 
