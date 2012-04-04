@@ -47,8 +47,12 @@ def polltstats(xap):
 	   #print
 	   badresponse[loop] = 0
 	   tstat = controller # pass through the the tstat array in the statlist
-	   temperatures[loop] = hm_GetNodeTemp(tstat, serport)
-	   print "Read Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[2], temperatures[loop])
+           try:
+	       temperatures[loop] = hm_GetNodeTemp(tstat, serport)
+	       print "Read Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[2], temperatures[loop])
+           except:
+               # leave temperatures[loop] unaffected, therefore reusing previous value
+               print "Exception caught while reading temp for location %s, moving on to next device **********" % (controller[2])
 
 	   time.sleep(2) # sleep for 2 seconds before next controller
 
