@@ -54,7 +54,7 @@ def polltstats(xap):
                # leave temperatures[loop] unaffected, therefore reusing previous value
                print "Exception caught while reading temp for location %s, moving on to next device **********" % (controller[2])
 
-	   time.sleep(2) # sleep for 2 seconds before next controller
+	   time.sleep(30) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
 
        serport.close()
 
