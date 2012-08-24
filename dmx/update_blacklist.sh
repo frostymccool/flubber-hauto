@@ -1,18 +1,22 @@
 #!/bin/sh
 
 # add lines to the blacklist file such that the dmx driver can load instead of the ttyUSB
-$filename ="/usr/local/net/var/lib/directoryservice/sync.disable"
-if [-e $filename ];
+# for Raspberry Pi the filename must have a .conf, not plain blacklist as referenced in ola build doc
+# for the dmx adapters I'm using blacklisting just the ftio_sio works
+
+filebase="blacklist.conf"
+filename="/etc/modprobe.d/blacklist.conf"
+if [! -e $filename ];
 then
 echo "blacklist file exists, adding to it"
-sed -i '$a blacklist usbserial' /etc/modprobe.d/blacklist
-sed -i '$a blacklist usb-serial' /etc/modprobe.d/blacklist
-sed -i '$a blacklist ftdi_sio' /etc/modprobe.d/blacklist
+#sed -i '$a blacklist usbserial' $filename
+#sed -i '$a blacklist usb-serial' $filename
+sed -i '$a blacklist ftdi_sio' $filename
 else
 echo "blacklist file doesn't exists, creating it"
-echo 'blacklist usbserial' > blacklist
-sed -i '$a blacklist usb-serial' blacklist
-sed -i '$a blacklist ftdi_sio' blacklist
-sudo mv blacklist /etc/modprobe.d/
+echo 'blacklist ftdi_sio' > $filebase
+#sed -i '$a blacklist usb-serial' $filebase
+#sed -i '$a blacklist usbserial' $filebase
+sudo mv $filebase $filename
 fi
 
