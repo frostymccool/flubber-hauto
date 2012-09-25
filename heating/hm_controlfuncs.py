@@ -9,11 +9,6 @@
 # hm_setTemp(temp,nodes=StatList)
 # hm_setTemp(temp,nodeName<string>))
 # hm_getTemp(nodes)
-# hm_setTime(datetime=0,nodes=StatList) # [yyyy,mm,dd,hh,mm,ss] 
-#               / 0 to use system date/time generally called 
-#               on server startup or when calendar events for 
-#               twice yearly clock changes.
-# hm_setHoldTime(time,temp=0,nodes=StatList) 
 #
 import serial
 from struct import pack
