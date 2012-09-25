@@ -1,14 +1,22 @@
 #
-# Neil Trimboy 2011
+# Original: Neil Trimboy 2011
+# Updated for Shawpad configuration: Ian Shaw
 #
 
 from hm_constants import *
+import serial
 
 # Master Address
 MY_MASTER_ADDR = 0x81
 
 # Port
 S_PORT_NAME = '/dev/ttyUSB0'
+COM_PORT = S_PORT_NAME
+COM_BAUD = 4800
+COM_SIZE = serial.EIGHTBITS
+COM_PARITY = serial.PARITY_NONE
+COM_STOP = serial.STOPBITS_ONE
+COM_TIMEOUT = 3
 
 # A list of controllers
 # Adjust the number of rows in this list as required
@@ -16,9 +24,9 @@ S_PORT_NAME = '/dev/ttyUSB0'
 # Controller Address, ShortName, LongName, Controller Type, Graph Colour
 StatList = [
 [1,  "KitchT", "Kitchen Top",    HMV3_ID, "A020F0"],
-[2,  "KitchB", "Kitchen Bottom", HMV3_ID, "D02090"],
+#[2,  "KitchB", "Kitchen Bottom", HMV3_ID, "D02090"],
 [3,  "Bed1", "Our Bedroom", HMV3_ID, "FFD700"],
-[4,  "Ens1", "Our Ensuite",    HMV3_ID, "6B8E23"],
+#[4,  "Ens1", "Our Ensuite",    HMV3_ID, "6B8E23"],
 #[3,  "Dine", "Dining",   HMV3_ID, "FF4500"],
 #[4,  "Liv", "Living",   HMV3_ID, "FF8C00"],
 #[10, "Study", "Study",  HMV3_ID, "00FA9A"],

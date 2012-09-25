@@ -7,6 +7,12 @@
 HMV2_ID = 2
 HMV3_ID = 3
 
+BYTEMASK = 0xff
+
+# Constants for Methods
+# Passed to hmVerifyMsgCRCOK when message is of type FUNC_WRITE
+DONT_CARE_LENGTH = 1
+
 #
 # HM Version 3 Magic Numbers
 #
