@@ -108,7 +108,7 @@ source=%s
 			self.heartbeat_tick = now
 			msg="""xap-hbeat
 {
-nv=12
+v=12
 hop=1
 uid=%s
 class=xap-hbeat-alive
