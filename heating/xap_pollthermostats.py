@@ -36,6 +36,7 @@ serport.timeout  = 3
 temperatures=range(15)
 badresponse=range(15)
 
+
 def polltstats(xap):
 
     try:
@@ -54,7 +55,7 @@ def polltstats(xap):
                # leave temperatures[loop] unaffected, therefore reusing previous value
                print "Exception caught while reading temp for location %s, moving on to next device **********" % (controller[2])
 
-	   time.sleep(30) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
+	   time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
 
        serport.close()
 
@@ -64,17 +65,23 @@ def polltstats(xap):
 
        # compile message for all stat temps, create message on a tstat name basis
        # TODO: review, do I send one packet per tstat or combined packet with all readings?
-       msg = "data\n{\n" 
-       for controller in StatList :
-           msg += "%s=%2.1f\n" % (controller[SL_SHRT_NAME], temperatures[controller[SL_ADDR]])
+#       msg = "data\n{\n" 
+#       for controller in StatList :
+#           msg += "%s=%2.1f\n" % (controller[SL_SHRT_NAME], temperatures[controller[SL_ADDR]])
 
+#       msg += "}"
+#       print msg
+
+       msg = "input.state\n{\nstate=on\ntext="
+       msg += "%2.1f\n" % temperatures[1]
        msg += "}"
        print msg
+
 
        # use an exception handler; if the network is down this command will fail
        try:
           #xap.sendHeatBeat(180)
-          xap.sendHeatingEventMsg( msg )
+          xap.sendEventMsg( msg )
        except:
           print "Failed to send xAP, network may be down"
       
@@ -85,5 +92,5 @@ def polltstats(xap):
     # wait another 45 seconds before attempting another read
     sleep(45)
 
-Xap("FF000F01","shawpad.ujog.tstats").run(polltstats)
+Xap("F4061101","shawpad.rpi1.heating:kitchentop.temp").run(polltstats)
 
