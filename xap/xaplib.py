@@ -3,6 +3,9 @@
 # XAP support library
 #
 # brett@dbzoo.com
+#
+# Updated for flubber
+# ian@shawpad.com
 
 import socket, traceback, time
 
@@ -92,8 +95,8 @@ source=%s
 	def sendSolarEventMsg(self, msg):
 		self.sendMsg("solar.event", "", msg)
 
-	def sendHeatingEventMsg(self, msg):
-		self.sendMsg("heating.event", "", msg)
+	def sendHeatingEventMsg(self, msg, classInstance):
+		self.sendMsg("%s.%s" % ("xAPBSC.event", classInstance), "", msg)
 
 	def receive(self):
 		try:

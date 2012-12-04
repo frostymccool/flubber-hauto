@@ -51,7 +51,7 @@ def polltstats(xap):
             serport.open()
 
             temperaturesCurrent[loop] = hm_GetNodeTemp(tstat, serport)
-            print "\nRead Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[2], temperatures[loop])
+            print "\nRead Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[SL_LONG_NAME], temperaturesCurrent[loop])
  
             # make sure we close the serial port before moving on
             serport.close()
@@ -61,28 +61,25 @@ def polltstats(xap):
             sys.stderr.write(s)
         
         except:
-            # leave temperatures[loop] unaffected, therefore reusing previous value
-            print "\nException caught while reading temp for location %s, moving on to next device **********" % (controller[2])
+            # leave temperaturesCurrent[loop] unaffected, therefore reusing previous value
+            print "\nException caught while reading temp for location %s, moving on to next device **********" % (controller[SL_LONG_NAME])
             
-        try:
-            # 2 - do we need to send the xap event
-            # check if the new temp read is the same as previous, if same, then move on, no need to send
-            if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
-                # send the xap event
-                msg = "input.state\n{\nstate=on\ntext="
-                msg += "%2.1f\n" % temperatures[1]
-                msg += "}"
-                print msg
+        # 2 - do we need to send the xap event
+        # check if the new temp read is the same as previous, if same, then move on, no need to send
+        if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
+            # send the xap event
+            msg = "input.state\n{\nstate=on\ntext="
+            msg += "%2.1f\n" % temperaturesCurrent[loop]
+            msg += "}"
+            print msg
                    
-                # use an exception handler; if the network is down this command will fail
-                try:
-                    xap.sendEventMsg( msg )
-                except:
-                    print "Failed to send xAP, network may be down"
-            else:
-                temperaturesPrevious[loop] = temperaturesCurrent[loop]
-        except:
-            print "Exception caught"
+            # use an exception handler; if the network is down this command will fail
+            try:
+                xap.sendHeatingEventMsg( msg, controller[SL_XAP_INSTANCE] )
+            except:
+                print "Failed to send xAP, network may be down"
+        else:
+            temperaturesPrevious[loop] = temperaturesCurrent[loop]
                     
         # 3 - check to service any pending xap events
         # ...............
@@ -92,5 +89,5 @@ def polltstats(xap):
     # wait another 45 seconds before attempting another read
     sleep(45)
 
-Xap("F4061101","shawpad.rpi1.heating:kitchentop.temp").run(polltstats)
+Xap("F4061101","shawpad.rpi1").run(polltstats)
 
