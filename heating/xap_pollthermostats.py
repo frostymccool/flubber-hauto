@@ -33,62 +33,59 @@ serport.stopbits = serial.STOPBITS_ONE
 serport.timeout  = 3
 
 # TODO: remove hardcoded size
-temperatures=range(15)
+temperaturesCurrent=range(15)
+temperaturesPrevious=range(15)
 badresponse=range(15)
 
 
 def polltstats(xap):
 
-    try:
-       serport.open()
+    # iterate through controllers in StatList
+    for controller in StatList:
+        loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
+        badresponse[loop] = 0
+        tstat = controller # pass through the the tstat array in the statlist
+           
+        # 1 - read the t-stat
+        try:
+            serport.open()
 
-       # iterate through controllers in StatList
-       for controller in StatList:
-           loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
-	   #print
-	   badresponse[loop] = 0
-	   tstat = controller # pass through the the tstat array in the statlist
-           try:
-	       temperatures[loop] = hm_GetNodeTemp(tstat, serport)
-	       print "Read Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[2], temperatures[loop])
-           except:
-               # leave temperatures[loop] unaffected, therefore reusing previous value
-               print "Exception caught while reading temp for location %s, moving on to next device **********" % (controller[2])
+            temperaturesCurrent[loop] = hm_GetNodeTemp(tstat, serport)
+            print "\nRead Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[2], temperatures[loop])
+ 
+            # make sure we close the serial port before moving on
+            serport.close()
 
-	   time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
+            # 2 - do we need to send the xap event
+            # check if the new temp read is the same as previous, if same, then move on, no need to send
+            if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
+                # send the xap event
+                msg = "input.state\n{\nstate=on\ntext="
+                msg += "%2.1f\n" % temperatures[1]
+                msg += "}"
+                print msg
+                   
+                # use an exception handler; if the network is down this command will fail
+                try:
+                    xap.sendEventMsg( msg )
+                except:
+                    print "Failed to send xAP, network may be down"
+            else:
+                temperaturesPrevious[loop] = temperaturesCurrent[loop]
+               
+        except serial.SerialException, e:
+            s= "%s : Could not open serial port %s, wait until next time for retry: %s\n" % (localtime, serport.portstr, e)
+            sys.stderr.write(s)
+                                
+        except:
+            # leave temperatures[loop] unaffected, therefore reusing previous value
+            print "\nException caught while reading temp for location %s, moving on to next device **********" % (controller[2])
 
-       serport.close()
+        # 3 - check to service any pending xap events
+        # ...............
 
-       # TODO: keep a copy of the temperatures, compare them to previous set and only send the XAP if any one is different
-
-       print "Sending xAP.."
-
-       # compile message for all stat temps, create message on a tstat name basis
-       # TODO: review, do I send one packet per tstat or combined packet with all readings?
-#       msg = "data\n{\n" 
-#       for controller in StatList :
-#           msg += "%s=%2.1f\n" % (controller[SL_SHRT_NAME], temperatures[controller[SL_ADDR]])
-
-#       msg += "}"
-#       print msg
-
-       msg = "input.state\n{\nstate=on\ntext="
-       msg += "%2.1f\n" % temperatures[1]
-       msg += "}"
-       print msg
-
-
-       # use an exception handler; if the network is down this command will fail
-       try:
-          #xap.sendHeatBeat(180)
-          xap.sendEventMsg( msg )
-       except:
-          print "Failed to send xAP, network may be down"
-      
-    except serial.SerialException, e:
-        s= "%s : Could not open serial port %s, wait until next time for retry: %s\n" % (localtime, serport.portstr, e)
-        sys.stderr.write(s)  
-
+        time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
+     
     # wait another 45 seconds before attempting another read
     sleep(45)
 
