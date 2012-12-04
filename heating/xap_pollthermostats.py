@@ -56,6 +56,15 @@ def polltstats(xap):
             # make sure we close the serial port before moving on
             serport.close()
 
+        except serial.SerialException, e:
+            s= "%s : Could not open serial port %s, wait until next time for retry: %s\n" % (localtime, serport.portstr, e)
+            sys.stderr.write(s)
+        
+        except:
+            # leave temperatures[loop] unaffected, therefore reusing previous value
+            print "\nException caught while reading temp for location %s, moving on to next device **********" % (controller[2])
+            
+        try:
             # 2 - do we need to send the xap event
             # check if the new temp read is the same as previous, if same, then move on, no need to send
             if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
@@ -72,15 +81,9 @@ def polltstats(xap):
                     print "Failed to send xAP, network may be down"
             else:
                 temperaturesPrevious[loop] = temperaturesCurrent[loop]
-               
-        except serial.SerialException, e:
-            s= "%s : Could not open serial port %s, wait until next time for retry: %s\n" % (localtime, serport.portstr, e)
-            sys.stderr.write(s)
-                                
         except:
-            # leave temperatures[loop] unaffected, therefore reusing previous value
-            print "\nException caught while reading temp for location %s, moving on to next device **********" % (controller[2])
-
+            print "Exception caught"
+                    
         # 3 - check to service any pending xap events
         # ...............
 
