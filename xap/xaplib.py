@@ -19,8 +19,10 @@ class Xap:
 		while self.running:
 			if self.port:
 				self.heartbeat(60)
+        # add receive buffer check here
 			try:
 				func(self)
+        # loop checking receive buffer and heartbeat while waiting for next time to run func
 			except KeyboardInterrupt:
 				self.done()
 				pass
