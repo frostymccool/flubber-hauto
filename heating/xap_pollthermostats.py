@@ -71,7 +71,7 @@ def polltstats(xap):
             msg = "input.state\n{\nstate=on\ntext="
             msg += "%2.1f\n" % temperaturesCurrent[loop]
             msg += "}"
-            print msg
+            #print msg
                    
             # use an exception handler; if the network is down this command will fail
             try:
