@@ -14,6 +14,7 @@ class Xap:
 		self.heartbeat_tick = 0;
 		self.uid = uid
 		self.source = source
+        self.sourceInstance = ""
 		self.port = 0
 		self.running = 1
 
@@ -66,16 +67,16 @@ class Xap:
 #                print "msg:", " port:",self.port
 		self.gout.sendto(msg, ('<broadcast>', 3639))
 
-	def sendMsg(self, clazz, target, msg):
+	def sendMsg(self, clazz, target, msg, sourceInstance):
 		msg = """xap-header
 {
 v=12
 hop=1
 uid=%s
 class=%s
-source=%s
+source=%s%s
 }
-%s""" % (self.uid, clazz, self.source, msg)
+%s""" % (self.uid, clazz, self.source, sourceInstance, msg)
 		self.send(msg)
 
 	def sendLCDMsg(self, msg):
@@ -95,8 +96,10 @@ source=%s
 	def sendSolarEventMsg(self, msg):
 		self.sendMsg("solar.event", "", msg)
 
-	def sendHeatingEventMsg(self, msg, classInstance):
-		self.sendMsg("%s.%s" % ("xAPBSC.event", classInstance), "", msg)
+	def sendHeatingEventMsg(self, msg, sourceInstance):
+        if len(sourceInstance)>0:
+            sourceInstance = ":%s" % sourceInstance
+		self.sendMsg("xAPBSC.event", "", msg, sourceInstance)
 
 	def receive(self):
 		try:
