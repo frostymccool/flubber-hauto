@@ -125,4 +125,4 @@ source=%s
 interval=%s
 port=%s
 }"""
-			self.send(msg % (self.uid, self.source, interval, self.port))
+			self.send(msg % (("%s%s" % (self.uid[:6],"00"), self.source, interval, self.port))
