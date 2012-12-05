@@ -97,7 +97,7 @@ source=%s%s
 	def sendSolarEventMsg(self, msg):
 		self.sendMsg("solar.event", "", msg)
 
-	def sendHeatingEventMsg(self, msg, sourceInstance):
+    def sendHeatingEventMsg(self, msg, sourceInstance):
         if len(sourceInstance)>0:
             sourceInstance = ":%s" % sourceInstance
         self.sendMsg("xAPBSC.event", "", msg, sourceInstance)
