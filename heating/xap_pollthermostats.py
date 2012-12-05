@@ -89,5 +89,5 @@ def polltstats(xap):
     # wait another 45 seconds before attempting another read
     sleep(45)
 
-Xap("F4061101","shawpad.rpi1").run(polltstats)
+Xap("F4061101","shawpad.rpi1.heating").run(polltstats)
 
