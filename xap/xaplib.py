@@ -11,12 +11,12 @@ import socket, traceback, time
 
 class Xap:
 	def __init__(self, uid, source):
-		self.heartbeat_tick = 0;
-		self.uid = uid
-		self.source = source
+        self.heartbeat_tick = 0;
+        self.uid = uid
+        self.source = source
         self.sourceInstance = ""
-		self.port = 0
-		self.running = 1
+        self.port = 0
+        self.running = 1
 
 	def run(self, func):
 		self.connect()
@@ -77,6 +77,7 @@ class=%s
 source=%s%s
 }
 %s""" % (self.uid, clazz, self.source, sourceInstance, msg)
+        print(msg)
 		self.send(msg)
 
 	def sendLCDMsg(self, msg):
@@ -99,7 +100,7 @@ source=%s%s
 	def sendHeatingEventMsg(self, msg, sourceInstance):
         if len(sourceInstance)>0:
             sourceInstance = ":%s" % sourceInstance
-		self.sendMsg("xAPBSC.event", "", msg, sourceInstance)
+        self.sendMsg("xAPBSC.event", "", msg, sourceInstance)
 
 	def receive(self):
 		try:
