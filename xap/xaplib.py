@@ -78,7 +78,7 @@ source=%s%s
 }
 %s""" % (self.uid, clazz, self.source, sourceInstance, msg)
         print(msg)
-		self.send(msg)
+        self.send(msg)
 
 	def sendLCDMsg(self, msg):
 		msg = "output.state.1\n{\nid=*\ntext=%s\n}" % msg
