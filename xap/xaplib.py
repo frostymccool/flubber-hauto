@@ -10,15 +10,15 @@
 import socket, traceback, time
 
 class Xap:
-	def __init__(self, uid, source):
-        self.heartbeat_tick = 0;
-        self.uid = uid
-        self.source = source
-        self.sourceInstance = ""
-        self.port = 0
-        self.running = 1
+  def __init__(self, uid, source):
+    self.heartbeat_tick = 0;
+    self.uid = uid
+    self.source = source
+    self.sourceInstance = ""
+    self.port = 0
+    self.running = 1
 
-	def run(self, func):
+  def run(self, func):
 		self.connect()
 		while self.running:
 			if self.port:
