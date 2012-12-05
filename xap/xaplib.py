@@ -36,12 +36,12 @@ class Xap:
 				traceback.print_exc()
 				self.done()
 
-	def done(self):
+    def done(self):
 		self.gout.close()
 		self.gin.close()
 		self.running = 0
 
-	def connect(self):
+    def connect(self):
 		host = ''
 		self.gin = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.gin.settimeout(60)
@@ -63,11 +63,11 @@ class Xap:
 		self.gout = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 		self.gout.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
-	def send(self ,msg):
+    def send(self ,msg):
 #                print "msg:", " port:",self.port
 		self.gout.sendto(msg, ('<broadcast>', 3639))
 
-	def sendMsg(self, clazz, target, msg, sourceInstance):
+    def sendMsg(self, clazz, target, msg, sourceInstance):
 		msg = """xap-header
 {
 v=12
