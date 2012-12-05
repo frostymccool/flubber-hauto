@@ -68,7 +68,7 @@ class Xap:
 		self.gout.sendto(msg, ('<broadcast>', 3639))
 
     def sendMsg(self, clazz, target, msg, sourceInstance):
-		msg = """xap-header
+        msg = """xap-header
 {
 v=12
 hop=1
