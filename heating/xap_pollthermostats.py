@@ -66,20 +66,23 @@ def polltstats(xap):
             
         # 2 - do we need to send the xap event
         # check if the new temp read is the same as previous, if same, then move on, no need to send
-        if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
-            # send the xap event
-            msg = "input.state\n{\nstate=on\ntext="
-            msg += "%2.1f\n" % temperaturesCurrent[loop]
-            msg += "}"
-            #print msg
+
+        # create the xap event
+        msg = "input.state\n{\nstate=on\ntext="
+        msg += "%2.1f\n" % temperaturesCurrent[loop]
+        msg += "}"
+        #print msg
                    
-            # use an exception handler; if the network is down this command will fail
-            try:
+        # use an exception handler; if the network is down this command will fail
+        try:
+            if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
                 xap.sendHeatingEventMsg( msg, controller[SL_XAP_INSTANCE] )
-            except:
-                print "Failed to send xAP, network may be down"
-        else:
-            temperaturesPrevious[loop] = temperaturesCurrent[loop]
+                temperaturesPrevious[loop] = temperaturesCurrent[loop]
+            else:
+                # send info message as no state change
+                xap.sendHeatingInfoMsg( msg, controller[SL_XAP_INSTANCE] )
+        except:
+            print "Failed to send xAP, network may be down"
                     
         # 3 - check to service any pending xap events
         # ...............
@@ -89,5 +92,21 @@ def polltstats(xap):
     # wait another 45 seconds before attempting another read
     sleep(45)
 
+def checkHeatingMessage(xap):
+    msg = "11"
+    nummsg = 0
+    while len(msg)>1:
+        msg = xap.receive()
+        print "Message Length: %d" % len(msg)
+        if len(msg)>0:
+            print msg
+            nummsg+=1
+                
+        print "Num messages in block: %d" % nummsg
+
+    sleep(10)
+
+
 Xap("F4061101","shawpad.rpi1.heating").run(polltstats)
+#Xap("F4061101","shawpad.rpi1.heating").run(checkHeatingMessage)
 
