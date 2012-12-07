@@ -76,11 +76,11 @@ def polltstats(xap):
         # use an exception handler; if the network is down this command will fail
         try:
             if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
-                xap.sendHeatingEventMsg( msg, controller[SL_XAP_INSTANCE] )
+                xap.sendInstanceEventMsg( msg, controller[SL_XAP_INSTANCE] )
                 temperaturesPrevious[loop] = temperaturesCurrent[loop]
             else:
                 # send info message as no state change
-                xap.sendHeatingInfoMsg( msg, controller[SL_XAP_INSTANCE] )
+                xap.sendInstanceInfoMsg( msg, controller[SL_XAP_INSTANCE] )
         except:
             print "Failed to send xAP, network may be down"
                     
@@ -107,6 +107,6 @@ def checkHeatingMessage(xap):
     sleep(10)
 
 
-Xap("F4061101","shawpad.rpi1.heating").run(polltstats)
-#Xap("F4061101","shawpad.rpi1.heating").run(checkHeatingMessage)
+Xap("F4061101","shawpad.rpi.heating").run(polltstats)
+#Xap("F4061101","shawpad.rpi.heating").run(checkHeatingMessage)
 

@@ -77,7 +77,7 @@ class=%s
 source=%s%s
 }
 %s""" % (self.uid, clazz, self.source, sourceInstance, msg)
-        print(msg)
+        #print(msg)
         self.send(msg)
 
     def sendLCDMsg(self, msg):
@@ -97,12 +97,12 @@ source=%s%s
     def sendSolarEventMsg(self, msg):
 		self.sendMsg("solar.event", "", msg)
 
-    def sendHeatingInfoMsg(self, msg, sourceInstance):
+    def sendInstanceInfoMsg(self, msg, sourceInstance):
         if len(sourceInstance)>0:
             sourceInstance = ":%s" % sourceInstance
         self.sendMsg("xAPBSC.info", "", msg, sourceInstance)
 
-    def sendHeatingEventMsg(self, msg, sourceInstance):
+    def sendInstanceEventMsg(self, msg, sourceInstance):
         if len(sourceInstance)>0:
             sourceInstance = ":%s" % sourceInstance
         self.sendMsg("xAPBSC.event", "", msg, sourceInstance)

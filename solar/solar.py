@@ -74,14 +74,14 @@ def solar(xap):
 
 	print "Sending xAP.."
 
-       	msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%s\n}" % (col, bottom, top, pump)
+    #msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%s\n}" % (col, bottom, top, pump)
 
        	# use an exception handler; if the network is down this command will fail
-       	try:
-          #xap.sendHeatBeat(180)
-          xap.sendSolarEventMsg( msg )
-       	except:
-          print "Failed to send xAP, network may be down"
+        #try:
+        #xap.sendHeatBeat(180)
+        #   xap.sendSolarEventMsg( msg )
+        #  	except:
+        #   print "Failed to send xAP, network may be down"
       
        	# <<proto> send BSC events
        	# top
@@ -90,7 +90,7 @@ def solar(xap):
 	msg += "}"
 
 	try:
-          xap.sendHeatingEventMsg( msg, "TankTop.temp")
+          xap.sendInstanceEventMsg( msg, "tanktop.temp")
 	except:
           print "Failed to send xAP, network may be down"
 
@@ -100,7 +100,7 @@ def solar(xap):
 	msg += "}"
 
 	try:
-          xap.sendHeatingEventMsg( msg, "TankBot.temp")
+          xap.sendInstanceEventMsg( msg, "tankbot.temp")
        	except:
           print "Failed to send xAP, network may be down"
 
@@ -110,7 +110,7 @@ def solar(xap):
 	msg += "}"
 
 	try:
-          xap.sendHeatingEventMsg( msg, "Collector.temp")
+          xap.sendInstanceEventMsg( msg, "collector.temp")
        	except:
           print "Failed to send xAP, network may be down"
 
