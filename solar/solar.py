@@ -106,7 +106,7 @@ def solar(xap):
 
 	# collector and pump state
 	msg = "input.state\n{\nstate=%stext=" % pump
-	msg += "%2.1f\n" % col
+	msg += "\n%2.1f\n" % col
 	msg += "}"
 
 	try:
