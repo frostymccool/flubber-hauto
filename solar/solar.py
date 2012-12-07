@@ -53,45 +53,45 @@ def solar(xap):
 
     # split the results into their core parts
     if len(result)>20 :
-       col, bottom, top, sp4, pump, sp1 = re.split('\ +',result,5)
+       	col, bottom, top, sp4, pump, sp1 = re.split('\ +',result,5)
 
-       col=float(col)
-       bottom=float(bottom)
-       top=float(top)
-       if pump==100 :
+       	col=float(col)
+       	bottom=float(bottom)
+       	top=float(top)
+       	if pump==100 :
          pump="On"
-       else :
+       	else :
          pump="Off"
 
-       # adjust collector for -ve
-       if col>600:
+       	# adjust collector for -ve
+       	if col>600:
          col=(col-6550.6)*-1
 
        
 
-       print "Captured reading: ",
-       print "col=",col, " bot=",bottom, " top=",top, " pump=",pump,
+       	print "Captured reading: ",
+       	print "col=",col, " bot=",bottom, " top=",top, " pump=",pump,
 
-       print "Sending xAP.."
+	print "Sending xAP.."
 
-       msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%s\n}" % (col, bottom, top, pump)
+       	msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%s\n}" % (col, bottom, top, pump)
 
-       # use an exception handler; if the network is down this command will fail
-       try:
+       	# use an exception handler; if the network is down this command will fail
+       	try:
           #xap.sendHeatBeat(180)
           xap.sendSolarEventMsg( msg )
-       except:
+       	except:
           print "Failed to send xAP, network may be down"
       
-	# <<proto> send BSC events
-	# top
+       	# <<proto> send BSC events
+       	# top
 	msg = "input.state\n{\ntext="
 	msg += "%2.1f\n" % top
 	msg += "}"
 
-      try:
+	try:
           xap.sendHeatingEventMsg( msg, "TankTop.temp")
-       except:
+	except:
           print "Failed to send xAP, network may be down"
 
 	# bottom
@@ -99,23 +99,19 @@ def solar(xap):
 	msg += "%2.1f\n" % bottom
 	msg += "}"
 
-      try:
+	try:
           xap.sendHeatingEventMsg( msg, "TankBot.temp")
-       except:
+       	except:
           print "Failed to send xAP, network may be down"
 
 	# collector and pump state
-	if pump=0:
-		ps="Off"
-	else:
-		ps="On"
 	msg = "input.state\n{\nstate=%stext="
-	msg += "%2.1f\n" % (ps,col)
+	msg += "%2.1f\n" % (pump,col)
 	msg += "}"
 
-      try:
+	try:
           xap.sendHeatingEventMsg( msg, "Collector.temp")
-       except:
+       	except:
           print "Failed to send xAP, network may be down"
 
 
