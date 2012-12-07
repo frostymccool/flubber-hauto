@@ -105,8 +105,8 @@ def solar(xap):
           print "Failed to send xAP, network may be down"
 
 	# collector and pump state
-	msg = "input.state\n{\nstate=%stext="
-	msg += "%2.1f\n" % (pump,col)
+	msg = "input.state\n{\nstate=%stext=" % pump
+	msg += "%2.1f\n" % col
 	msg += "}"
 
 	try:
