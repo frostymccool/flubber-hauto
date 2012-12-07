@@ -83,6 +83,43 @@ def solar(xap):
        except:
           print "Failed to send xAP, network may be down"
       
+	# <<proto> send BSC events
+	# top
+	msg = "input.state\n{\ntext="
+	msg += "%2.1f\n" % top
+	msg += "}"
+
+      try:
+          xap.sendHeatingEventMsg( msg, "TankTop.temp")
+       except:
+          print "Failed to send xAP, network may be down"
+
+	# bottom
+	msg = "input.state\n{\ntext="
+	msg += "%2.1f\n" % bottom
+	msg += "}"
+
+      try:
+          xap.sendHeatingEventMsg( msg, "TankBot.temp")
+       except:
+          print "Failed to send xAP, network may be down"
+
+	# collector and pump state
+	if pump=0:
+		ps="Off"
+	else:
+		ps="On"
+	msg = "input.state\n{\nstate=%stext="
+	msg += "%2.1f\n" % (ps,col)
+	msg += "}"
+
+      try:
+          xap.sendHeatingEventMsg( msg, "Collector.temp")
+       except:
+          print "Failed to send xAP, network may be down"
+
+
+
     else:
        print "No value captured"
 
