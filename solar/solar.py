@@ -96,7 +96,7 @@ def solar(xap):
 
 	# bottom
 	msg = "input.state\n{\ntext="
-	msg += "%2.1f\n" % bottom
+	msg += "\n%2.1f\n" % bottom
 	msg += "}"
 
 	try:
@@ -114,13 +114,11 @@ def solar(xap):
        	except:
           print "Failed to send xAP, network may be down"
 
-
-
     else:
        print "No value captured"
 
     # wait another 45 seconds before attempting another read
     sleep(45)
 
-Xap("F4060F00","shawpad.ujog.solar").run(solar)
+Xap("F4060F01","shawpad.ujog.solar").run(solar)
 
