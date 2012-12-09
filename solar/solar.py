@@ -100,13 +100,21 @@ def solar(xap):
        	except:
           print "Failed to send xAP, network may be down"
 
-	# collector and pump state
-	msg = "input.state\n{\nstate=%s\ntext=%2.1f\n}" % (pump,col)
+	# collector temp
+	msg = "input.state\n{\ntext=%2.1f\n}" % col
 
 	try:
           xap.sendInstanceEventMsg( msg, "collector.temp")
        	except:
           print "Failed to send xAP, network may be down"
+
+	# pump state
+	msg = "input.state\n{\nstate=%s\n}" % pump
+    
+	try:
+        	xap.sendInstanceEventMsg( msg, "pump")
+	except:
+        	print "Failed to send xAP, network may be down"
 
     else:
        print "No value captured"
