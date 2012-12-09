@@ -85,9 +85,7 @@ def solar(xap):
       
        	# <<proto> send BSC events
        	# top
-	msg = "input.state\n{\ntext="
-	msg += "%2.1f\n" % top
-	msg += "}"
+	msg = "input.state\n{\ntext=%2.1f\n}" % top
 
 	try:
           xap.sendInstanceEventMsg( msg, "tanktop.temp")
@@ -95,9 +93,7 @@ def solar(xap):
           print "Failed to send xAP, network may be down"
 
 	# bottom
-	msg = "input.state\n{\ntext="
-	msg += "\n%2.1f\n" % bottom
-	msg += "}"
+	msg = "input.state\n{\ntext=%2.1f\n}" % bottom
 
 	try:
           xap.sendInstanceEventMsg( msg, "tankbot.temp")
@@ -105,9 +101,7 @@ def solar(xap):
           print "Failed to send xAP, network may be down"
 
 	# collector and pump state
-	msg = "input.state\n{\nstate=%stext=" % pump
-	msg += "\n%2.1f\n" % col
-	msg += "}"
+	msg = "input.state\n{\nstate=%s\ntext=%2.1f\n}" % (pump,col)
 
 	try:
           xap.sendInstanceEventMsg( msg, "collector.temp")
