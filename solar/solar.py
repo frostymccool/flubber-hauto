@@ -72,23 +72,16 @@ def solar(xap):
        	print "Captured reading: ",
        	print "col=",col, " bot=",bottom, " top=",top, " pump=",pump,
 
-	print "Sending xAP.."
+	print "Sending xAPs.."
 
-    #msg = "data\n{\ncoltemp=%.2f\ntankbottemp=%.2f\ntanktoptemp=%.2f\npump=%s\n}" % (col, bottom, top, pump)
-
-       	# use an exception handler; if the network is down this command will fail
-        #try:
-        #xap.sendHeatBeat(180)
-        #   xap.sendSolarEventMsg( msg )
-        #  	except:
-        #   print "Failed to send xAP, network may be down"
-      
-       	# <<proto> send BSC events
        	# top
 	msg = "input.state\n{\ntext=%2.1f\n}" % top
 
 	try:
-          xap.sendInstanceEventMsg( msg, "tanktop.temp")
+            if pTop!=top:
+                xap.sendInstanceEventMsg( msg, "tanktop.temp")
+            else:
+                xap.sendInstanceInfoMsg( msg, "tanktop.temp")
 	except:
           print "Failed to send xAP, network may be down"
 
@@ -96,7 +89,10 @@ def solar(xap):
 	msg = "input.state\n{\ntext=%2.1f\n}" % bottom
 
 	try:
-          xap.sendInstanceEventMsg( msg, "tankbot.temp")
+            if pBottom!=bottom:
+                xap.sendInstanceEventMsg( msg, "tankbot.temp")
+            else:
+                xap.sendInstanceInfoMsg( msg, "tankbot.temp")
        	except:
           print "Failed to send xAP, network may be down"
 
@@ -104,7 +100,10 @@ def solar(xap):
 	msg = "input.state\n{\ntext=%2.1f\n}" % col
 
 	try:
-          xap.sendInstanceEventMsg( msg, "collector.temp")
+            if pCol!=col:
+                xap.sendInstanceEventMsg( msg, "collector.temp")
+            else:
+                xap.sendInstanceInfoMsg( msg, "collector.temp")
        	except:
           print "Failed to send xAP, network may be down"
 
@@ -112,9 +111,17 @@ def solar(xap):
 	msg = "input.state\n{\nstate=%s\n}" % pump
     
 	try:
-        	xap.sendInstanceEventMsg( msg, "pump")
+            if pPump!=pump:
+                xap.sendInstanceEventMsg( msg, "pump")
+            else:
+                xap.sendInstanceInfoMsg( msg, "pump")
 	except:
         	print "Failed to send xAP, network may be down"
+
+        pTop=top
+        pBottom=bottom
+        pCol=col
+        pPump=pump
 
     else:
        print "No value captured"
