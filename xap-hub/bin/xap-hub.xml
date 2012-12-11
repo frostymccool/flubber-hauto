@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<device>
+	<name>thermalHub</name>
+	<xaphbeatf>60</xaphbeatf>
+	<xapuid>FF0033</xapuid>
+	<port>3639</port>
+</device>
+
+	
