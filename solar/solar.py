@@ -30,7 +30,14 @@ pBottom=0
 pTop=0
 pPump=0
 
+syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
+
 def solar(xap):
+    global pBottom
+    global pCol
+    global pTop
+    global pPump
+    
     s = serial.Serial("/dev/ttyUSB0")
 
     # test - read 100 bytes from serial port and print out (non formatted, thus garbled
@@ -58,14 +65,15 @@ def solar(xap):
        	col=float(col)
        	bottom=float(bottom)
        	top=float(top)
-       	if pump==100 :
+       	if pump>0 :
          pump="On"
        	else :
          pump="Off"
 
        	# adjust collector for -ve
        	if col>600:
-         col=(col-6550.6)*-1
+            print "Col -ve value: %2.1f\n" % col
+            col=(col-6550.6)*-1
 
        
 
@@ -128,6 +136,8 @@ def solar(xap):
 
     # wait another 45 seconds before attempting another read
     sleep(45)
+
+syslog.syslog(syslog.LOG_INFO, 'Processing started')
 
 Xap("F4060F01","shawpad.ujog.solar").run(solar)
 

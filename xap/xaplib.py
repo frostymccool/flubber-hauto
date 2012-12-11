@@ -64,9 +64,12 @@ class Xap:
 		self.gout.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
     def send(self ,msg):
+        try:
 #                print "msg:", " port:",self.port
-		self.gout.sendto(msg, ('<broadcast>', 3639))
-
+            self.gout.sendto(msg, ('<broadcast>', 3639))
+        except:
+            syslog.syslog(syslog.LOG_ERR, 'Error while sending network packet')
+    
     def sendMsg(self, clazz, target, msg, sourceInstance):
         msg = """xap-header
 {

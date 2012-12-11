@@ -18,6 +18,7 @@ import subprocess
 import re
 from struct import pack
 import os
+import syslog
 
 from stats_defn import *
 from hm_constants import *
@@ -37,9 +38,16 @@ temperaturesCurrent=range(15)
 temperaturesPrevious=range(15)
 badresponse=range(15)
 
+readingsTaken=0
+
+syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
 
 def polltstats(xap):
-
+    global readingsTaken
+    global temperaturesCurrent
+    global temperaturesPrevious
+    global badresponse
+    
     # iterate through controllers in StatList
     for controller in StatList:
         loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
@@ -68,9 +76,7 @@ def polltstats(xap):
         # check if the new temp read is the same as previous, if same, then move on, no need to send
 
         # create the xap event
-        msg = "input.state\n{\nstate=on\ntext="
-        msg += "%2.1f\n" % temperaturesCurrent[loop]
-        msg += "}"
+        msg = "input.state\n{\nstate=on\ntext=%2.1f\n}" % temperaturesCurrent[loop]
         #print msg
                    
         # use an exception handler; if the network is down this command will fail
@@ -88,9 +94,15 @@ def polltstats(xap):
         # ...............
 
         time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
-     
+
+    readingsTaken+=1
+    if readingsTaken % 10:
+        syslog.syslog(syslog.LOG_INFO, 'logged:%d stat looops' % readingsTaken)
+    
     # wait another 45 seconds before attempting another read
     sleep(45)
+
+
 
 def checkHeatingMessage(xap):
     msg = "11"
@@ -107,6 +119,9 @@ def checkHeatingMessage(xap):
     sleep(10)
 
 
-Xap("F4061101","shawpad.rpi.heating").run(polltstats)
-#Xap("F4061101","shawpad.rpi.heating").run(checkHeatingMessage)
+syslog.syslog(syslog.LOG_INFO, 'Processing started')
 
+Xap("F4061101","shawpad.rpi.heating").run(polltstats)
+#Xap("F4061102","shawpad.rpi.heating").run(checkHeatingMessage)
+
+syslog.syslog(syslog.LOG_ERR, 'Unexpectidely quit')
