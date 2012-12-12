@@ -15,6 +15,7 @@ import serial
 import binascii
 import subprocess 
 import re
+import syslog
 
 # sequence / process
 # uses vbusdecode compiled c from vbusdecode on google code projects (thanks)
