@@ -99,8 +99,8 @@ def polltstats(xap):
     if readingsTaken % 10:
         syslog.syslog(syslog.LOG_INFO, 'logged:%d stat looops' % readingsTaken)
     
-    # wait another 45 seconds before attempting another read
-    sleep(45)
+    # wait another 30 seconds before attempting another read
+    sleep(30)
 
 
 
