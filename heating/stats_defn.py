@@ -27,7 +27,7 @@ StatList = [
 [2,  "Brk", "Breakfast Bar", HMV3_ID, "D02090", "breakfastbar.temp"],
 [3,  "Bed1", "Our Bedroom", HMV3_ID, "FFD700", "bedroom1.temp"],
 [4,  "Ens1", "Our Ensuite",    HMV3_ID, "6B8E23", "ensuite1.temp"],
-#[3,  "Din", "Dining",   HMV3_ID, "FF4500"],
+[5,  "Din", "Dining",   HMV3_ID, "FF4500", "dining.temp"],
 #[4,  "Liv", "Living",   HMV3_ID, "FF8C00"],
 #[10, "Study", "Study",  HMV3_ID, "00FA9A"],
 #[6,  "Bath", "Bathroom", HMV3_ID, "D2691E"],
