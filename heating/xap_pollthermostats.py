@@ -8,6 +8,7 @@
 # reference code for hah/xap from http://code.google.com/p/livebox-hah/
 
 import sys
+import signal
 import serial
 sys.path.append('../xap')
 
@@ -38,16 +39,48 @@ temperaturesCurrent=range(15)
 temperaturesPrevious=range(15)
 badresponse=range(15)
 
-readingsTaken=0
+# thread
+serialmutex=0
+xapmutex=0
 
+# debug / logging
+readingsTaken=0
 syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
+
+class TimeoutException(Exception): 
+    pass
+
+# use the mutex variable to control access to the serial portdef obtainMutexSerialAccess():
+def obtainMutexSerialAccess(serport):
+    global serialmutex
+
+    def timeout_handler(signum, frame):
+        raise TimeoutException()
+
+    signal.signal(signal.SIGALRM, timeout_handler)
+    signal.alarm(30) # allow 30 secs for the other process to complete before timing out
+
+    while (serialmutex==1):
+        # do nothing other than checking for timeout
+        x=0
+
+    # mutext now been released, so grab it and open the serial port
+    serialmutex=1
+    serport.open()
+
+def releaseMutexSerialAccess(serport):
+    global serialmutex
+    serport.close()
+    serialmutex=0
 
 def polltstats(xap):
     global readingsTaken
     global temperaturesCurrent
     global temperaturesPrevious
     global badresponse
-    
+    global serialmutex
+    global xapmutex
+
     # iterate through controllers in StatList
     for controller in StatList:
         loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
@@ -56,13 +89,14 @@ def polltstats(xap):
            
         # 1 - read the t-stat
         try:
-            serport.open()
+            # first wait to make sure no other thread is using the serial
+            obtainMutexSerialAccess(serport)
 
             temperaturesCurrent[loop] = hm_GetNodeTemp(tstat, serport)
             print "\nRead Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[SL_LONG_NAME], temperaturesCurrent[loop])
  
             # make sure we close the serial port before moving on
-            serport.close()
+            releaseMutexSerialAccess(serport)
 
         except serial.SerialException, e:
             s= "%s : Could not open serial port %s, wait until next time for retry: %s\n" % (localtime, serport.portstr, e)
@@ -121,7 +155,11 @@ def checkHeatingMessage(xap):
 
 syslog.syslog(syslog.LOG_INFO, 'Processing started')
 
-Xap("F4061101","shawpad.rpi.heating").run(polltstats)
+while(1):
+    try:
+        Xap("F4061101","shawpad.rpi.heating").run(polltstats)
 #Xap("F4061102","shawpad.rpi.heating").run(checkHeatingMessage)
 
-syslog.syslog(syslog.LOG_ERR, 'Unexpectidely quit')
+    except:
+        syslog.syslog(syslog.LOG_ERR, 'Xap Crash')
+
