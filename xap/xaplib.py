@@ -71,6 +71,10 @@ class Xap:
             syslog.syslog(syslog.LOG_ERR, 'Error while sending network packet')
     
     def sendMsg(self, clazz, target, msg, sourceInstance):
+        if len(target)>0:
+            tm = "target=%s" % target
+        else:
+            tm = ""
         msg = """xap-header
 {
 v=12
@@ -78,8 +82,9 @@ hop=1
 uid=%s
 class=%s
 source=%s%s
+%s
 }
-%s""" % (self.uid, clazz, self.source, sourceInstance, msg)
+%s""" % (self.uid, clazz, self.source, sourceInstance, tm, msg)
         #print(msg)
         self.send(msg)
 
@@ -97,9 +102,12 @@ source=%s%s
     def sendEventMsg(self, msg):
 		self.sendMsg("xAPBSC.event", "", msg)
 
-    def sendSolarEventMsg(self, msg):
-		self.sendMsg("solar.event", "", msg)
-
+    def sendCmdMsg(self, target, msg):
+		self.sendMsg("xAPBSC.cmd", target, msg)
+    
+    def sendQueryMsg(self, target, msg):
+		self.sendMsg("xAPBSC.query", target, msg)
+    
     def sendInstanceInfoMsg(self, msg, sourceInstance):
         if len(sourceInstance)>0:
             sourceInstance = ":%s" % sourceInstance
