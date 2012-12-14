@@ -157,7 +157,7 @@ syslog.syslog(syslog.LOG_INFO, 'Processing started')
 
 #while(1):
 #    try:
-        Xap("F4061101","shawpad.rpi.heating").run(polltstats)
+Xap("F4061101","shawpad.rpi.heating").run(polltstats)
 #Xap("F4061102","shawpad.rpi.heating").run(checkHeatingMessage)
 
 #    except:
