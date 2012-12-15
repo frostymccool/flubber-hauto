@@ -55,6 +55,7 @@ def obtainMutexSerialAccess(serport):
     global serialmutex
 
     def timeout_handler(signum, frame):
+        print "Timeout exeption while waiting for serial mutex"
         raise TimeoutException()
 
     signal.signal(signal.SIGALRM, timeout_handler)
@@ -95,9 +96,6 @@ def polltstats(xap):
             temperaturesCurrent[loop] = hm_GetNodeTemp(tstat, serport)
             print "\nRead Temperature for address %2d in location %s as %2.1f *****************************" % (loop, controller[SL_LONG_NAME], temperaturesCurrent[loop])
  
-            # make sure we close the serial port before moving on
-            releaseMutexSerialAccess(serport)
-
         except serial.SerialException, e:
             s= "%s : Could not open serial port %s, wait until next time for retry: %s\n" % (localtime, serport.portstr, e)
             sys.stderr.write(s)
@@ -105,7 +103,10 @@ def polltstats(xap):
         except:
             # leave temperaturesCurrent[loop] unaffected, therefore reusing previous value
             print "\nException caught while reading temp for location %s, moving on to next device **********" % (controller[SL_LONG_NAME])
-            
+        
+        # make sure we close the serial port before moving on
+        releaseMutexSerialAccess(serport)
+        
         # 2 - do we need to send the xap event
         # check if the new temp read is the same as previous, if same, then move on, no need to send
 
