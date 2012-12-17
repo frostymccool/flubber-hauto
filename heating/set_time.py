@@ -50,28 +50,32 @@ except serial.SerialException, e:
 print "%s port configuration is %s" % (serport.name, serport.isOpen())
 print "%s baud, %s bit, %s parity, with %s stopbits, timeout %s seconds" % (serport.baudrate, serport.bytesize, serport.parity, serport.stopbits, serport.timeout)
 
-#good = [0,0,0,0,0,0,0,0,0,0,0,0,0] # TODO one bigger than size required YUK
+good = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0] # TODO one bigger than size required YUK
 #bad =  [0,0,0,0,0,0,0,0,0,0,0,0,0]
 
-badresponse = range(12+1) #TODO hardcoded 12 here! YUK
+def setTime(controller, serport):
+    global good
+    
+    loop = controller[SL_ADDR] #BUG assumes statlist is addresses are 1...n, with no gaps or random
 
-# CYCLE THROUGH ALL CONTROLLERS
-for controller in StatList:
-	loop = controller[0] #BUG assumes statlist is addresses are 1...n, with no gaps or random
-	print
-	print "Testing control %2d in %s *****************************" % (loop, controller[2])
-	badresponse[loop] = 0
-	# TODO is not V3 controller raise error
-	destination = loop
-	hmUpdateTime(destination, serport)
+    print "Testing control %2d in %s *****************************" % (loop, controller[SL_LONG_NAME])
 
-	# if badresponse[loop] == 0:
-		# print "All OK, time set in Controller %s" % loop
-
-	loop = loop+1 # Change to for loop TODO not used
+    try:
+        if hmUpdateTime(controller, serport)==0:
+            good[loop] = 1  #once set correctly flag it, such that we don't call again during retry loop
+    except:
+        print "Error setting time for %s at address %2d, moving on" % (controller[SL_LONG_NAME], loop)
+ 
 	time.sleep(2) # sleep for 2 seconds before next controller
 
-#END OF CYCLE THROUGH CONTROLLERS
+# create a 5 time retry loop
+for retry in range(5):
+    # CYCLE THROUGH ALL CONTROLLERS
+    for controller in StatList:
+        if good[controller[SL_ADDR]]==0:
+            setTime(controller,serport)
+
+    #END OF CYCLE THROUGH CONTROLLERS
 
 serport.close() # close port
 print "Port is now %s" % serport.isOpen()

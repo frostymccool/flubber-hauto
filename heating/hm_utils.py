@@ -100,7 +100,7 @@ def hmFormMsgCRC(destination, protocol, source, function, start, payload) :
 # expectedLength only used for read msgs as always 7 for write
 def hmVerifyMsgCRCOK(destination, protocol, source, expectedFunction, expectedLength, datal) :
   """Verifies message appears legal"""
-  localtime = "UNKNOWN" # TODO
+  localtime = "<UNKNOWN TIME>" # TODO
   loop = 2 # TODO
   badresponse = 0
   print datal
@@ -193,19 +193,18 @@ def hmVerifyMsgCRCOK(destination, protocol, source, expectedFunction, expectedLe
   else:
     assert 0, "Un-supported protocol found %s" % protocol
 
-def hmKeyLock_On(destination, serport) :
-  hmKeyLock(destination, KEY_LOCK_LOCK, serport)
+def hmKeyLock_On(controller, serport) :
+  hmKeyLock(controller, KEY_LOCK_LOCK, serport)
 
-def hmKeyLock_Off(destination, serport) :
-  hmKeyLock(destination, KEY_LOCK_UNLOCK, serport)
+def hmKeyLock_Off(controller, serport) :
+  hmKeyLock(controller, KEY_LOCK_UNLOCK, serport)
 
-def hmKeyLock(destination, state, serport) :
+def hmKeyLock(controller, state, serport) :
     """bla bla"""
-    protocol = HMV3_ID # TODO should look this up in statlist
+    protocol = controller[SL_CONTR_TYPE]
     if protocol == HMV3_ID:
         payload = [state]
-        # TODO should not be necessary to pass in protocol as we can look that up in statlist
-        msg = hmFormMsgCRC(destination, protocol, MY_MASTER_ADDR, FUNC_WRITE, KEY_LOCK_ADDR, payload)
+        msg = hmFormMsgCRC(controller[SL_ADDR], protocol, MY_MASTER_ADDR, FUNC_WRITE, KEY_LOCK_ADDR, payload)
     else:
         "Un-supported protocol found %s" % protocol
         assert 0, "Un-supported protocol found %s" % protocol
@@ -226,12 +225,12 @@ def hmKeyLock(destination, state, serport) :
     datal = []
     datal = datal + (map(ord,byteread))
 
-    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, destination, FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, controller[SL_ADDR], FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
         print "OH DEAR BAD RESPONSE"
     return 1
 
 
-def hmSetHolEnd(destination, enddatetime, serport) :
+def hmSetHolEnd(controller, enddatetime, serport) :
     """bla bla"""
     nowdatetime = datetime.now()
     print nowdatetime
@@ -243,18 +242,17 @@ def hmSetHolEnd(destination, enddatetime, serport) :
     hours = seconds/(60*60)
     totalhours = days*24 + hours + 1
     print "Setting holiday to end in %d days %d hours or %d total_hours on %s, it is now %s" % (days, hours, totalhours, enddatetime, nowdatetime)
-    hmSetHolHours(destination, totalhours, serport)
+    hmSetHolHours(controller, totalhours, serport)
 
 
-def hmSetHolHours(destination, hours, serport) :
+def hmSetHolHours(controller, hours, serport) :
     """bla bla"""
-    protocol = HMV3_ID # TODO should look this up in statlist
+    protocol = controller[SL_CONTR_TYPE]
     if protocol == HMV3_ID:
         hours_lo = (hours & BYTEMASK)
         hours_hi = (hours >> 8) & BYTEMASK
         payload = [hours_lo, hours_hi]
-        # TODO should not be necessary to pass in protocol as we can look that up in statlist
-        msg = hmFormMsgCRC(destination, protocol, MY_MASTER_ADDR, FUNC_WRITE, HOL_HOURS_LO_ADDR, payload)
+        msg = hmFormMsgCRC(controller[SL_ADDR], protocol, MY_MASTER_ADDR, FUNC_WRITE, HOL_HOURS_LO_ADDR, payload)
     else:
         "Un-supported protocol found %s" % protocol
         assert 0, "Un-supported protocol found %s" % protocol
@@ -276,13 +274,13 @@ def hmSetHolHours(destination, hours, serport) :
     datal = []
     datal = datal + (map(ord,byteread))
 
-    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, destination, FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, controller[SL_ADDR], FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
         print "OH DEAR BAD RESPONSE"
     return 1
 
-def hmUpdateTime(destination, serport) :
+def hmUpdateTime(controller, serport) :
     """bla bla"""
-    protocol = HMV3_ID # TODO should look this up in statlist
+    protocol = controller[SL_CONTR_TYPE]
     if protocol == HMV3_ID:
         msgtime = time.time()
         msgtimet = time.localtime(msgtime)
@@ -296,16 +294,14 @@ def hmUpdateTime(destination, serport) :
             secs = 60 # Need to do this as pyhton seconds can be  [0,61]
         print "%d %d:%d:%d" % (day, hour, mins, secs)
         payload = [day, hour, mins, secs]
-        #msg = hmFormMsgCRC(destination, controller[SL_CONTR_TYPE], MY_MASTER_ADDR, FUNC_WRITE, CUR_TIME_ADDR, payload)
-        msg = hmFormMsgCRC(destination, protocol, MY_MASTER_ADDR, FUNC_WRITE, CUR_TIME_ADDR, payload)
-        # TODO should not be necessary to pass in protocol as we can look that up in statlist
-        #msg = hmFormMsgCRC(destination, protocol, MY_MASTER_ADDR, FUNC_WRITE, HOL_HOURS_LO_ADDR, payload)
+ 
+        msg = hmFormMsgCRC(controller[SL_ADDR], protocol, MY_MASTER_ADDR, FUNC_WRITE, CUR_TIME_ADDR, payload)
     else:
         "Un-supported protocol found %s" % protocol
         assert 0, "Un-supported protocol found %s" % protocol
         # TODO return error/exception
 
-    print msg
+    #print msg
     # http://stackoverflow.com/questions/180606/how-do-i-convert-a-list-of-ascii-values-to-a-string-in-python
     string = ''.join(map(chr,msg))
 
@@ -321,17 +317,17 @@ def hmUpdateTime(destination, serport) :
     datal = []
     datal = datal + (map(ord,byteread))
 
-    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, destination, FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, controller[SL_ADDR], FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
         print "OH DEAR BAD RESPONSE"
-    return 1
+        return 1
+    return 0
 
-def hmSetTemp(destination, temp, serport) :
+def hmSetTemp(controller, temp, serport) :
     """bla bla"""
-    protocol = HMV3_ID # TODO should look this up in statlist
+    protocol = controller[SL_CONTR_TYPE] 
     if protocol == HMV3_ID:
         payload = [temp]
-        # TODO should not be necessary to pass in protocol as we can look that up in statlist
-        msg = hmFormMsgCRC(destination, protocol, MY_MASTER_ADDR, FUNC_WRITE, SET_TEMP_ADDR, payload)
+        msg = hmFormMsgCRC(controller[SL_ADDR], protocol, MY_MASTER_ADDR, FUNC_WRITE, SET_TEMP_ADDR, payload)
     else:
         "Un-supported protocol found %s" % protocol
         assert 0, "Un-supported protocol found %s" % protocol
@@ -352,23 +348,22 @@ def hmSetTemp(destination, temp, serport) :
     datal = []
     datal = datal + (map(ord,byteread))
 
-    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, destination, FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, controller[SL_ADDR], FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
         print "OH DEAR BAD RESPONSE"
     return 1
     
-def hmHoldTemp(destination, temp, minutes, serport) :
+def hmHoldTemp(controller, temp, minutes, serport) :
     """bla bla"""
     # @todo reject if number too big
-    hmSetTemp(destination, temp, serport)
+    hmSetTemp(controller, temp, serport)
     time.sleep(2) # sleep for 2 seconds before next controller
-    protocol = HMV3_ID # TODO should look this up in statlist
+    protocol = controller[SL_CONTR_TYPE]
     if protocol == HMV3_ID:
         minutes_lo = (minutes & BYTEMASK)
         minutes_hi = (minutes >> 8) & BYTEMASK
         payload = [minutes_lo, minutes_hi]
-        # TODO should not be necessary to pass in protocol as we can look that up in statlist
         # TODO address - is this different for a read? think so , so how do constant
-        msg = hmFormMsgCRC(destination, protocol, MY_MASTER_ADDR, FUNC_WRITE, 32, payload)
+        msg = hmFormMsgCRC(controller[SL_ADDR], protocol, MY_MASTER_ADDR, FUNC_WRITE, 32, payload)
     else:
         "Un-supported protocol found %s" % protocol
         assert 0, "Un-supported protocol found %s" % protocol
@@ -389,6 +384,6 @@ def hmHoldTemp(destination, temp, minutes, serport) :
     datal = []
     datal = datal + (map(ord,byteread))
 
-    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, destination, FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
+    if (hmVerifyMsgCRCOK(MY_MASTER_ADDR, protocol, controller[SL_ADDR], FUNC_WRITE, DONT_CARE_LENGTH, datal) == False):
         print "OH DEAR BAD RESPONSE"
     return 1
