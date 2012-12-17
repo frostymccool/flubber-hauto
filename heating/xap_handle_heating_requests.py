@@ -32,7 +32,12 @@ trgcntQ = len(triggerQuery)
 triggerCmd = ["source=shawpad.rpi.heating", "class=xAPBSC.cmd"]
 trgcntC = len(triggerCmd)
 
-syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
+#syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
+
+def servicexAPStack(xap):
+    if 0:
+        print "<<<<Service xap messages...>>>>\n"
+
 
 def monitorHeating(xap):
     message, address = xap.receive()
@@ -64,6 +69,6 @@ def monitorHeating(xap):
 
 # MAIN
 
-syslog.syslog(syslog.LOG_INFO, 'Processing started')
+#syslog.syslog(syslog.LOG_INFO, 'Processing started')
 
-Xap("FF000F01","shawpad.rpi.heating.event").run(monitorHeating)
+#Xap("FF000F01","shawpad.rpi.heating.event").run(monitorHeating)

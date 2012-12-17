@@ -72,19 +72,10 @@ class Xap:
     
     def sendMsg(self, clazz, target, msg, sourceInstance):
         if len(target)>0:
-            tm = "target=%s" % target
+            targetm = "\ntarget=%s" % target
         else:
-            tm = ""
-        msg = """xap-header
-{
-v=12
-hop=1
-uid=%s
-class=%s
-source=%s%s
-%s
-}
-%s""" % (self.uid, clazz, self.source, sourceInstance, tm, msg)
+            targetm = ""
+        msg = "xap-header\n{\nv=12\nhop=1\nuid=%s\nclass=%s\nsource=%s%s%s\n}\n%s" % (self.uid, clazz, self.source, sourceInstance, targetm, msg)
         #print(msg)
         self.send(msg)
 
