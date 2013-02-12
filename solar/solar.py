@@ -39,10 +39,10 @@ def solar(xap):
     global pTop
     global pPump
     
-    s = serial.Serial("/dev/ttyUSB0")
+    s = serial.Serial("/dev/ttyUSB1")
 
-    # test - read 100 bytes from serial port and print out (non formatted, thus garbled
-    line = s.read(100)
+    # test - read 150 bytes from serial port and print out (non formatted, thus garbled
+    line = s.read(150)
 
     # convert to ascii 
     # print binascii.hexlify(line)
@@ -52,12 +52,12 @@ def solar(xap):
 
     # decode the line, at the moment, system calling the vbusdecode binary, 
     # should really put the decode in python
-    vb = subprocess.Popen(["./vbusdecode", "0,15,0.1", "2,15,0.1", "4,15,0.1", "6,15,0.1", "8,7,1", "9,7,1"],  stdin=subprocess.PIPE,  stdout=subprocess.PIPE)
+    vb = subprocess.Popen(["./vbusdecode_pi", "0,15,0.1", "2,15,0.1", "4,15,0.1", "6,15,0.1", "8,7,1", "9,7,1"],  stdin=subprocess.PIPE,  stdout=subprocess.PIPE)
     result = vb.communicate(line)[0]
 
     # make sure only one frame is present from decode
-    #result = result[:26]
-    #print result
+    # result = result[:26]
+    # print result
 
     # split the results into their core parts
     if len(result)>20 :
@@ -66,7 +66,8 @@ def solar(xap):
        	col=float(col)
        	bottom=float(bottom)
        	top=float(top)
-       	if pump>0 :
+	pump=float(pump)
+      	if pump>0 :
          pump="On"
        	else :
          pump="Off"
