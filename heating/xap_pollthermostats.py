@@ -164,7 +164,7 @@ def heatingHandler(xap):
         time.sleep(1) # sleep between elements
             
     readingsTaken+=1
-    if readingsTaken % 10:
+    if readingsTaken % 50:
         syslog.syslog(syslog.LOG_INFO, 'logged:%d stat looops - Good:%d, Bad:%d' % (readingsTaken, serialReadsGood, serialReadsBad))
     
     # wait another 30 seconds before attempting another read
