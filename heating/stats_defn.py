@@ -18,9 +18,18 @@ COM_PARITY = serial.PARITY_NONE
 COM_STOP = serial.STOPBITS_ONE
 COM_TIMEOUT = 3
 
+# COSM variables.
+# DEBUG - Feed 121698
+# HAH Thermostats - Feed 43698
+# Shawpad HAH - Feed 43437
+API_KEY = '<API_KEY>'
+FEED = 121698
+API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = FEED)
+
 # A list of controllers
 # Adjust the number of rows in this list as required
 # Items in each row are :
+<<<<<<< HEAD
 # Controller Address, ShortName, LongName, Controller Type, Graph Colour, xAP_Instance, xAP UID, T-Stat available bool
 StatList = [
 [1,  "Kit", "Kitchen",    HMV3_ID, "A020F0", "kitchen.temp", "F4061102", 1],
@@ -42,6 +51,23 @@ StatList = [
 #[17, "Clk", "Cloak Room",  HMV3_ID, "00FA9A", "cloakroom.temp","F4061118", 0],
 #[18, "Dry", "Drying Rail",  HMV3_ID, "00FA9A", "drying.temp","F4061119", 0],
 #[19, "Hall", "Hallway",  HMV3_ID, "00FA9A", "hallway.temp","F4061120", 0],
+=======
+# Controller Address, ShortName, LongName, Controller Type, Graph Colour, xAP_Instance, COSM ID
+StatList = [
+[1,  "Kit", "Kitchen",    HMV3_ID, "A020F0", "kitchen.temp", 4],
+[2,  "Brk", "Breakfast Bar", HMV3_ID, "D02090", "breakfastbar.temp", 5],
+[3,  "Bed1", "Our Bedroom", HMV3_ID, "FFD700", "bedroom1.temp", 2],
+[4,  "Ens1", "Our Ensuite",    HMV3_ID, "6B8E23", "ensuite1.temp", 3],
+[5,  "Din", "Dining",   HMV3_ID, "FF4500", "dining.temp", 6],
+#[4,  "Liv", "Living",   HMV3_ID, "FF8C00"],
+#[10, "Study", "Study",  HMV3_ID, "00FA9A"],
+#[6,  "Bath", "Bathroom", HMV3_ID, "D2691E"],
+#[9,  "Play", "Playroom",   HMV3_ID, "32CD32"],
+#[11, "Chloe", "Chloe's Bedroom", HMV3_ID, "1E90FF"],
+#[12, "Ethan", "Ehtan's Bedroom", HMV3_ID, "6A5ACD"],
+#[10, "Loft", "Loft Room",  HMV3_ID, "00FA9A"],
+#[10, "Hall", "Kids Hallway",  HMV3_ID, "00FA9A"],
+>>>>>>> COSM Support
 ]
 
 # Named indexing into StatList
@@ -51,5 +77,9 @@ SL_LONG_NAME = 2
 SL_CONTR_TYPE = 3
 SL_GRAPH_COL = 4
 SL_XAP_INSTANCE = 5
+<<<<<<< HEAD
 SL_XAP_UID = 6
 SL_STAT_PRESENT = 7
+=======
+SL_COSM_ID = 6
+>>>>>>> COSM Support

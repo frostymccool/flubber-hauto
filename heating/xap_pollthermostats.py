@@ -20,6 +20,7 @@ import re
 from struct import pack
 import os
 import syslog
+import eeml
 
 from stats_defn import *
 from hm_constants import *
@@ -114,10 +115,18 @@ def heatingHandler(xap):
     global temperaturesPrevious
     global badresponse
     global xapmutex
+<<<<<<< HEAD
     global serialReadsGood
     global serialReadsBad
     
     # normal operation iterate through controllers in StatList, reading their status
+=======
+
+    # open up  cosm feed
+    pac = eeml.Pachube(API_URL, API_KEY)
+    
+    # iterate through controllers in StatList
+>>>>>>> COSM Support
     for controller in StatList:
         print "Starting: %s...." % controller[SL_LONG_NAME]
         
@@ -151,7 +160,14 @@ def heatingHandler(xap):
 
         try:
             if temperaturesCurrent[loop] != temperaturesPrevious[loop]:
+
+                # Send the xap message
                 xap.sendInstanceEventMsg( msg, controller[SL_XAP_INSTANCE] )
+                
+                # Upload temperature to COSM
+                pac.update([eeml.Data(controller[SL_COSM_ID], temperaturesCurrent[loop], unit=eeml.Celsius())])
+                pac.put()
+                
                 temperaturesPrevious[loop] = temperaturesCurrent[loop]
                 #print("event message")
             else:
@@ -159,10 +175,20 @@ def heatingHandler(xap):
                 xap.sendInstanceInfoMsg( msg, controller[SL_XAP_INSTANCE] )
                 #print("info messge")
         except:
+<<<<<<< HEAD
             print "Failed to send xAP, network may be down"
         
         time.sleep(1) # sleep between elements
             
+=======
+            print "Failed to send xAP/COSM, network may be down"
+
+        # 3 - check to service any pending xap events
+        # ...............
+
+        time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
+
+>>>>>>> COSM Support
     readingsTaken+=1
     if readingsTaken % 50:
         syslog.syslog(syslog.LOG_INFO, 'logged:%d stat looops - Good:%d, Bad:%d' % (readingsTaken, serialReadsGood, serialReadsBad))
