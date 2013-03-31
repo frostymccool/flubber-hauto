@@ -5,6 +5,7 @@
 
 from hm_constants import *
 import serial
+import sp_keys
 
 # Master Address
 MY_MASTER_ADDR = 0x81
@@ -19,12 +20,7 @@ COM_STOP = serial.STOPBITS_ONE
 COM_TIMEOUT = 3
 
 # COSM variables.
-# DEBUG - Feed 121698
-# HAH Thermostats - Feed 43698
-# Shawpad HAH - Feed 43437
-API_KEY = '<API_KEY>'
-FEED = 121698
-API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = FEED)
+API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_DEBUG)
 
 # A list of controllers
 # Adjust the number of rows in this list as required
