@@ -11,6 +11,7 @@ import sys
 import signal
 import serial
 sys.path.append('../xap')
+sys.path.append('../include')
 
 from xaplib import Xap
 from time import localtime, strftime, sleep
@@ -26,7 +27,11 @@ from stats_defn import *
 from hm_constants import *
 from hm_utils import *
 from hm_controlfuncs import *
+<<<<<<< HEAD
 from xap_handle_heating_requests import *
+=======
+from sp_keys import *
+>>>>>>> COSM into include
 
 serport = serial.Serial()
 serport.port     = S_PORT_NAME
@@ -46,6 +51,9 @@ serialReadsBad=0
 # thread
 serialmutex=0
 xapmutex=0
+
+# COSM variables.
+COSM_API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_DEBUG)
 
 # debug / logging
 readingsTaken=0
@@ -123,7 +131,7 @@ def heatingHandler(xap):
 =======
 
     # open up  cosm feed
-    pac = eeml.Pachube(API_URL, API_KEY)
+    pac = eeml.Pachube(COSM_API_URL, COSM_API_KEY)
     
     # iterate through controllers in StatList
 >>>>>>> COSM Support
