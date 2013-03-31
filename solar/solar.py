@@ -8,14 +8,18 @@
 
 import sys
 sys.path.append('../xap')
+sys.path.append('../include')
 
 from xaplib import Xap
 from time import localtime, strftime, sleep
+from sp_keys import *
+
 import serial
 import binascii
 import subprocess 
 import re
 import syslog
+import eeml
 
 # sequence / process
 # uses vbusdecode compiled c from vbusdecode on google code projects (thanks)
@@ -24,12 +28,18 @@ import syslog
 # if no events have been posted for 3 new readings then post an xapInfo packet
 # need to generate heatbeat events - need to work out how often to send them
 
+# use TStats Feed for debug
 
 # need to keep some old values, so as not to dump event when no change in values
 pCol=0
 pBottom=0
 pTop=0
 pPump=0
+
+# pachube / cosm
+# API_KEY='moved to include file'
+COSM_API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_DEBUG)
+
 
 syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
 
@@ -41,8 +51,8 @@ def solar(xap):
     
     s = serial.Serial("/dev/ttyUSB1")
 
-    # test - read 150 bytes from serial port and print out (non formatted, thus garbled
-    line = s.read(150)
+    # test - read 100 bytes from serial port and print out (non formatted, thus garbled
+    line = s.read(100)
 
     # convert to ascii 
     # print binascii.hexlify(line)
@@ -84,12 +94,16 @@ def solar(xap):
 
 	print "Sending xAPs.."
 
+	# open up your cosm feed
+        pac = eeml.Pachube(COSM_API_URL, COSM_API_KEY)
+
        	# top
 	msg = "input.state\n{\ntext=%2.1f\n}" % top
 
 	try:
             if pTop!=top:
                 xap.sendInstanceEventMsg( msg, "tanktop.temp")
+	    	pac.update([eeml.Data(2, top, unit=eeml.Celsius())])
             else:
                 xap.sendInstanceInfoMsg( msg, "tanktop.temp")
 	except:
@@ -101,6 +115,7 @@ def solar(xap):
 	try:
             if pBottom!=bottom:
                 xap.sendInstanceEventMsg( msg, "tankbot.temp")
+  	    	pac.update([eeml.Data(1, bottom, unit=eeml.Celsius())])
             else:
                 xap.sendInstanceInfoMsg( msg, "tankbot.temp")
        	except:
@@ -112,9 +127,10 @@ def solar(xap):
 	try:
             if pCol!=col:
                 xap.sendInstanceEventMsg( msg, "collector.temp")
+	     	pac.update([eeml.Data(0, col, unit=eeml.Celsius())])
             else:
-                xap.sendInstanceInfoMsg( msg, "collector.temp")
-       	except:
+		xap.sendInstanceInfoMsg( msg, "collector.temp")
+       	except:        
           print "Failed to send xAP, network may be down"
 
 	# pump state
@@ -123,6 +139,7 @@ def solar(xap):
 	try:
             if pPump!=pump:
                 xap.sendInstanceEventMsg( msg, "pump")
+            	pac.update([eeml.Data(3, pump, unit=eeml.Unit('Binary','derivedUnits','B'))])
             else:
                 xap.sendInstanceInfoMsg( msg, "pump")
 	except:
@@ -132,6 +149,12 @@ def solar(xap):
         pBottom=bottom
         pCol=col
         pPump=pump
+
+	# send data to cosm
+	try:
+		pac.put()
+	except:
+		print "Failed to update COSM, network may be down"
 
     else:
        print "No value captured"
