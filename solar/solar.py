@@ -38,7 +38,7 @@ pPump=0
 
 # pachube / cosm
 # API_KEY='moved to include file'
-COSM_API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_DEBUG)
+COSM_API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_SHAWPAD)
 
 
 syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_SYSLOG)
@@ -103,7 +103,7 @@ def solar(xap):
 	try:
             if pTop!=top:
                 xap.sendInstanceEventMsg( msg, "tanktop.temp")
-	    	pac.update([eeml.Data(2, top, unit=eeml.Celsius())])
+	    	pac.update([eeml.Data(11, top, unit=eeml.Celsius())])
             else:
                 xap.sendInstanceInfoMsg( msg, "tanktop.temp")
 	except:
@@ -115,7 +115,7 @@ def solar(xap):
 	try:
             if pBottom!=bottom:
                 xap.sendInstanceEventMsg( msg, "tankbot.temp")
-  	    	pac.update([eeml.Data(1, bottom, unit=eeml.Celsius())])
+  	    	pac.update([eeml.Data(10, bottom, unit=eeml.Celsius())])
             else:
                 xap.sendInstanceInfoMsg( msg, "tankbot.temp")
        	except:
@@ -127,7 +127,7 @@ def solar(xap):
 	try:
             if pCol!=col:
                 xap.sendInstanceEventMsg( msg, "collector.temp")
-	     	pac.update([eeml.Data(0, col, unit=eeml.Celsius())])
+	     	pac.update([eeml.Data(9, col, unit=eeml.Celsius())])
             else:
 		xap.sendInstanceInfoMsg( msg, "collector.temp")
        	except:        
@@ -139,7 +139,7 @@ def solar(xap):
 	try:
             if pPump!=pump:
                 xap.sendInstanceEventMsg( msg, "pump")
-            	pac.update([eeml.Data(3, pump, unit=eeml.Unit('Binary','derivedUnits','B'))])
+            	pac.update([eeml.Data(12, pump, unit=eeml.Unit('Binary','derivedUnits','B'))])
             else:
                 xap.sendInstanceInfoMsg( msg, "pump")
 	except:
