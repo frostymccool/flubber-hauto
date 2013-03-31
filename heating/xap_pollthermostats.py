@@ -27,11 +27,8 @@ from stats_defn import *
 from hm_constants import *
 from hm_utils import *
 from hm_controlfuncs import *
-<<<<<<< HEAD
 from xap_handle_heating_requests import *
-=======
 from sp_keys import *
->>>>>>> COSM into include
 
 serport = serial.Serial()
 serport.port     = S_PORT_NAME
@@ -53,7 +50,7 @@ serialmutex=0
 xapmutex=0
 
 # COSM variables.
-COSM_API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_DEBUG)
+COSM_API_URL = '/v2/feeds/{feednum}.xml' .format(feednum = COSM_FEED_THERMOSTATS)
 
 # debug / logging
 readingsTaken=0
@@ -123,18 +120,15 @@ def heatingHandler(xap):
     global temperaturesPrevious
     global badresponse
     global xapmutex
-<<<<<<< HEAD
     global serialReadsGood
     global serialReadsBad
     
     # normal operation iterate through controllers in StatList, reading their status
-=======
 
     # open up  cosm feed
     pac = eeml.Pachube(COSM_API_URL, COSM_API_KEY)
     
     # iterate through controllers in StatList
->>>>>>> COSM Support
     for controller in StatList:
         print "Starting: %s...." % controller[SL_LONG_NAME]
         
@@ -183,12 +177,6 @@ def heatingHandler(xap):
                 xap.sendInstanceInfoMsg( msg, controller[SL_XAP_INSTANCE] )
                 #print("info messge")
         except:
-<<<<<<< HEAD
-            print "Failed to send xAP, network may be down"
-        
-        time.sleep(1) # sleep between elements
-            
-=======
             print "Failed to send xAP/COSM, network may be down"
 
         # 3 - check to service any pending xap events
@@ -196,7 +184,6 @@ def heatingHandler(xap):
 
         time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
 
->>>>>>> COSM Support
     readingsTaken+=1
     if readingsTaken % 50:
         syslog.syslog(syslog.LOG_INFO, 'logged:%d stat looops - Good:%d, Bad:%d' % (readingsTaken, serialReadsGood, serialReadsBad))
