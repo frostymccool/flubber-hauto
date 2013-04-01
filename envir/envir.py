@@ -46,6 +46,8 @@ SensorList=[
 # COSM feed ID for the envir temperature value
 COSM_ID_TEMP=2
 
+syslog.syslog(syslog.LOG_INFO, 'Processing started')
+
 ser = serial.Serial('/dev/ttyUSB2',57600 )
 
 # open up  cosm feed
@@ -53,6 +55,7 @@ pac = eeml.Pachube(COSM_API_URL, COSM_API_KEY)
 
 line = ""
 while 1:
+  try:
     x = ser.read()
     line = line + x
     if (x == "\n"):
@@ -98,4 +101,7 @@ while 1:
             changed=0
 
         readingsTaken+=1
-    
+  except:
+    print "Issue with capture element"
+    syslog.syslog(syslog.LOG_ERR, 'Exception thrown during loop')
+
