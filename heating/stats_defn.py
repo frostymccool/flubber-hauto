@@ -32,7 +32,7 @@ StatList = [
 [3,  "Bed1", "Our Bedroom", HMV3_ID, "FFD700", "bedroom1.temp","F4061108", 1, 2],
 [4,  "Ens1", "Our Ensuite",    HMV3_ID, "6B8E23", "ensuite1.temp", "F4061109", 1, 3],
 #[9, "Bed2", "Chloe's Bedroom", HMV3_ID, "1E90FF", "bedroom2.temp","F4061110", 0, 7],
-[10, "Bed3", "Ehtan's Bedroom", HMV3_ID, "6A5ACD", "bedroom3.temp","F4061111", 1, 8],
+[10, "Bed3", "Ethan's Bedroom", HMV3_ID, "6A5ACD", "bedroom3.temp","F4061111", 1, 8],
 #[11, "Bed4", "Loft Room",  HMV3_ID, "00FA9A", "bedroom4.temp","F4061112", 0, 11],
 #[12, "Ens4", "Ensuite Loft",  HMV3_ID, "00FA9A", "ensuite4.temp","F4061113", 0, 0],
 #[13, "Study", "Study",  HMV3_ID, "00FA9A", "study.temp", "F4061114", 0, 12],
