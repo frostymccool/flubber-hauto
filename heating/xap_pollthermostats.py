@@ -185,7 +185,7 @@ def heatingHandler(xap):
         time.sleep(1) # sleep for 30 seconds before next controller, while the stat list is small, 30sec periods are quick enough
 
     readingsTaken+=1
-    if readingsTaken % 50:
+    if readingsTaken % 50 == 0:
         syslog.syslog(syslog.LOG_INFO, 'logged:%d stat looops - Good:%d, Bad:%d' % (readingsTaken, serialReadsGood, serialReadsBad))
     
     # wait another 30 seconds before attempting another read
