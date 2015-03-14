@@ -1,0 +1,1 @@
+The Shawpad Automated Home. Revolving around Livebox hah, hah nodes, jogglers, raspberry pis, resol solar thermal, current cost electricity monitor, a whole bunch of cat5e and music infrastructure from squeezebox
